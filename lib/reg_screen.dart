@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/api_service.dart'; // Import the API service to call your API
-import 'reg_success_screen.dart'; // Import the RegistrationSuccessScreen
+import 'package:mobile_app/api_service.dart'; // Import your API service
+import 'reg_success_screen.dart'; // Import RegistrationSuccessScreen
 
 class RegScreen extends StatefulWidget {
   const RegScreen({super.key});
@@ -12,7 +12,7 @@ class RegScreen extends StatefulWidget {
 class RegScreenState extends State<RegScreen> {
   // Controllers for capturing input data
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController(); // Email controller
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
@@ -122,126 +122,160 @@ class RegScreenState extends State<RegScreen> {
               ),
             ),
           ),
-          // Main container for the registration form
-          Padding(
-            padding: const EdgeInsets.only(top: 150.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(40),
-                  topRight: Radius.circular(40),
+          
+          // Main container for the registration form wrapped inside a SingleChildScrollView
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 150.0),
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  color: Colors.white,
                 ),
-                color: Colors.white,
-              ),
-              height: double.infinity,
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    // Username TextField
-                    TextField(
-                      controller: _usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                height: MediaQuery.of(context).size.height, // Adjust height to screen size
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
 
-                    // Email TextField (added)
-                    TextField(
-                      controller: _emailController,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
+                      // User Icon Image
+                      Image.asset(
+                        'assets/img/user.png', // Add path to your image
+                        width: 128.0, // Adjust the size as needed
+                        height: 128.0, // Adjust the size as needed
                       ),
-                    ),
-                    const SizedBox(height: 20),
+                      const SizedBox(height: 30),
 
-                    // Password TextField
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Confirm Password TextField
-                    TextField(
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Confirm Password',
-                        labelStyle: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Sign Up Button
-                    GestureDetector(
-                      onTap: _isLoading ? null : _registerUser,  // Disable button while loading
-                      child: Container(
-                        height: 55,
-                        width: 300,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color.fromARGB(255, 49, 48, 48),
-                              Color.fromARGB(255, 0, 0, 0),
-                            ],
+                      // Username TextField
+                      TextField(
+                        controller: _usernameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Username',
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: Colors.black),
                           ),
                         ),
-                        child: _isLoading
-                            ? const Center(child: CircularProgressIndicator())  // Show loading indicator
-                            : const Center(
-                                child: Text(
-                                  'SIGN UP',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                    color: Colors.white,
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Email TextField
+                      TextField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Password TextField
+                      TextField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Confirm Password TextField
+                      TextField(
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          labelText: 'Confirm Password',
+                          labelStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Sign Up Button with loading state
+                      GestureDetector(
+                        onTap: _isLoading ? null : _registerUser, // Disable button while loading
+                        child: Container(
+                          height: 55,
+                          width: 300,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color.fromARGB(255, 49, 48, 48),
+                                Color.fromARGB(255, 0, 0, 0),
+                              ],
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const Center(child: CircularProgressIndicator()) // Show loading indicator
+                              : const Center(
+                                  child: Text(
+                                    'SIGN UP',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 50),
-                  ],
+                      const SizedBox(height: 50),
+                       const Align(
+                        alignment: Alignment.bottomRight,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              "Already have an account?",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, color: Colors.grey),
+                            ),
+                            Text(
+                              "Login",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
