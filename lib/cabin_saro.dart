@@ -1,229 +1,201 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:mobile_app/reservation.dart';
-void main() {
-  runApp(const CabinSaroScreen()); // Directly initialize CabinSaroScreen as the starting point
-}
+import 'cabin_service.dart';
+import 'cabin_model.dart';
 
-class CabinSaroScreen extends StatelessWidget {
-  const CabinSaroScreen({super.key});
+class SaroScreen extends StatefulWidget {
+  const SaroScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const ScaffoldWithCarousel(); // Directly use ScaffoldWithCarousel as the home widget
+  SaroScreenState createState() => SaroScreenState();
+}
+
+class SaroScreenState extends State<SaroScreen> {
+  late Future<List<Cabin>> futureCabins;
+
+  @override
+  void initState() {
+    super.initState();
+    futureCabins = CabinService().fetchCabins(); // Fetch cabin data using CabinService
   }
-}
-
-class ScaffoldWithCarousel extends StatefulWidget {
-  const ScaffoldWithCarousel({super.key});
-
-  @override
-  ScaffoldWithCarouselState createState() => ScaffoldWithCarouselState();
-}
-
-class ScaffoldWithCarouselState extends State<ScaffoldWithCarousel> {
-  // List of asset image paths
-  List<String> imgList = [
-    'assets/img/cabins3.jpeg',
-    'assets/img/cabins3.jpeg',
-    'assets/img/cabins3.jpeg',
-    'assets/img/cabins3.jpeg',
-    'assets/img/cabins3.jpeg',
-    'assets/img/cabins3.jpeg',
-  ];
-
-  // Index of the currently displayed image
-  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Set the background color of the screen to black
       appBar: AppBar(
-        backgroundColor: Colors.white, // Set app bar background color to white
-        title: const Text(
-          'CABIN SARO',
-          style: TextStyle(color: Colors.black), // Set text color to black
-        ),
+        backgroundColor: Colors.black,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black), // Back icon color
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop(); // This will pop the current screen and go back to the previous screen
+            Navigator.pop(context);
           },
         ),
-      ),
-      body: SingleChildScrollView( // Make the body scrollable
-        child: Column(
-          children: [
-            // Carousel Slider
-            CarouselSlider(
-              options: CarouselOptions(
-                autoPlay: true, // Auto-play carousel
-                enlargeCenterPage: true, // Enlarge the center image
-                aspectRatio: 16 / 9, // Aspect ratio of the images
-                viewportFraction: 1.0, // Make sure the images fill the entire screen width
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    currentIndex = index; // Update the index
-                  });
-                },
-              ),
-              items: imgList.map((item) {
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 0.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(0), // Rounded corners for better aesthetic
-                    child: Image.asset(
-                      item,
-                      width: MediaQuery.of(context).size.width, // Full screen width
-                      height: double.infinity, // Flexible height
-                      fit: BoxFit.cover, // Cover the screen entirely
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-
-            const SizedBox(height: 20),
-
-            // AMENITIES Section (Centered Title)
-            const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(
-                child: Text(
-                  'CABIN SARO AMENITIES',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white, // White color for the title
-                    letterSpacing: 1.2, // Slight spacing between letters
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // AMENITIES INCLUSIONS Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildInclusionTile(
-                    icon: Icons.home,
-                    text: 'Two-storey OVERLOOKING cabin with modern industrial interior',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.ac_unit,
-                    text: 'Fully air-conditioned',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.pool,
-                    text: '1 overflow type pool (4 ft)',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.hot_tub,
-                    text: 'Jacuzzi (3 feet) not heated but has a blower for bubble massage',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.nature,
-                    text: 'Lanai and garden area',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.kitchen,
-                    text: 'Indoor kitchen with basic cooking & dining wares (additional 200.00 charge for use of gas range)',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.bathtub,
-                    text: 'Toilet and bath',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.shower,
-                    text: 'Separate shower area with bathtub (w/heater)',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.bed,
-                    text: 'Two queen beds in the 2nd floor (w/extra mattress if needed)',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.weekend,
-                    text: 'One L-Shaped daybed with pullout bed in the ground floor area',
-                  ),
-                  // New Amenities
-                  _buildInclusionTile(
-                    icon: Icons.tv,
-                    text: '55" SMART TV',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.wifi,
-                    text: 'PLDT WIFI access, 5G is also available in the area. Strong signal.',
-                  ),
-                  _buildInclusionTile(
-                    icon: Icons.mic,
-                    text: 'COMPLIMENTARY videoke (which can be used up to 10PM only)',
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Make Reservation Button
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: OutlinedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ReservationScreen()),
-                  );
-                },
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.white, width: 2), // White border
-                  padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30), // Button height
-                ),
-                child: const Text(
-                  'PROCEED TO RESERVATION',
-                  style: TextStyle(
-                    color: Colors.white, // White text
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20), // Adding some space below the button
-          ],
+        title: const Text(
+          'Cabin Saro',
+          style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
         ),
-      ),
-    );
-  }
-
-  // Method to build each inclusion item with an icon
-  Widget _buildInclusionTile({required IconData icon, required String text}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          Icon(
-            icon,
-            color: Colors.white, // Icon color
-            size: 28.0, // Icon size
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Colors.white, // Text color
-              ),
-            ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline, color: Colors.white),
+            onPressed: () {
+              // Add action for info
+            },
           ),
         ],
+      ),
+      body: FutureBuilder<List<Cabin>>(
+        future: futureCabins,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            List<Cabin> cabins = snapshot.data!;
+
+            // Filter cabins to only include the one with name 'Cabin Saro'
+            List<Cabin> saroCabins = cabins.where((cabin) => cabin.name == 'Saro').toList();
+
+            if (saroCabins.isEmpty) {
+              return const Center(child: Text('No Cabin Saro available'));
+            }
+
+            return ListView.builder(
+              itemCount: saroCabins.length,
+              itemBuilder: (context, index) {
+                Cabin cabin = saroCabins[index];
+                return Card(
+                  margin: const EdgeInsets.all(16.0), // Increased margin for better spacing
+                  elevation: 10.0, // More elevation for better card depth
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0), // Rounded corners for the card
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Display the image at the top, covering the full width
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
+                        child: Image.network(
+                          cabin.image,
+                          width: double.infinity,
+                          height: 250, // Increased height for the image
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Cabin Name
+                            Text(
+                              cabin.name,
+                              style: const TextStyle(
+                                fontSize: 28, // Increased size for cabin name
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            // Description Section with Styled Container
+                            Container(
+                              padding: const EdgeInsets.all(16.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade100, // Light background for description
+                                borderRadius: BorderRadius.circular(12.0), // Rounded corners
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 8.0,
+                                    offset: Offset(0, 2), // Soft shadow effect
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Description:',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Text(
+                                    cabin.description,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                      height: 1.5, // Increased line height for better readability
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16.0),
+                            // Cabin Amenities Header
+                            const Text(
+                              'Amenities:',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+
+                            // Display the amenities in a grid or list style
+                            Wrap(
+                              spacing: 8.0, // Horizontal space between items
+                              runSpacing: 8.0, // Vertical space between items
+                              children: cabin.amenity.map((item) {
+                                return Chip(
+                                  label: Text(
+                                    item,
+                                    style: const TextStyle(
+                                      fontSize: 12, // Slightly increased text size
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.blue.shade50, // Light blue background for chips
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                  labelStyle: const TextStyle(color: Colors.black87),
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 20.0),
+                            // Button for booking or further actions with gradient
+                            Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  // Add your booking or further action logic here
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12), backgroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ), // Button color
+                                  side: const BorderSide(color: Colors.white, width: 2),
+                                ),
+                                child: const Text(
+                                  'Book Now',
+                                  style: TextStyle(fontSize: 18, color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text('No cabins available'));
+          }
+        },
       ),
     );
   }
